@@ -97,6 +97,27 @@ app.get('/pandemia/consultar/:idPandemia', (req, res) => {
 
 /*
     Curar un país por id de pandemia y id del país, esto tendrá el efecto de que el país sumará a los
-    curados la cantidad d de infectados menos la cantidad de muertos y cambiará el estado de en
+    curados la cantidad, de infectados menos la cantidad de muertos y cambiará el estado de en
     curso de verdadero a falso.
 */
+app.put('/curar-pais/:idPandemia/:idPais', (req, res) => {
+    //Se recibe ID de pandemia y de país
+    const { idPandemia, idPais } = req.params;
+    const pandemia = pandemias.find((pandemia) => pandemia.id === Number(idPandemia));
+    if (!pandemia) {
+        res.send('ID de pandemia no existe');
+    }
+
+    const pais = pandemia.paises.find((pais) => pais.id === Number(idPais));
+
+    if (!pais) {
+        res.send('ID de país no existe');
+    }
+
+    //A los infectados se le restan cuántos se recuperaron y cuántos murieron. Si el resultado es 0
+    //Quiere decir que ya no hay infectados y se almacena en un bool
+    const curado = Number(pais.infectados) - Number(pais.recuperados) - Number(pais.muertes) === 0;
+    pais.enCurso = curado;
+
+    res.send(pais);
+});
