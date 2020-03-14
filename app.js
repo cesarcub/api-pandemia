@@ -10,6 +10,11 @@ app.listen(3000, () => {
     console.log('Corriendo en http://localhost:3000');
 });
 
+//0. Obtener pandemias
+app.get('/', (req, res) => {
+    res.send(pandemias);
+});
+
 //1. Crear nueva pandemia, esta se debe crear solamente con la información básica
 app.post('/crear', (req, res) => {
     //Se recibe body y se asigna a la variable pandemia
@@ -133,7 +138,7 @@ app.put('/curar-pais/:idPandemia/:idPais', (req, res) => {
     //A los infectados se le restan cuántos se recuperaron y cuántos murieron. Si el resultado es 0
     //Quiere decir que ya no hay infectados y se almacena en un bool
     const curado = Number(pais.infectados) - Number(pais.recuperados) - Number(pais.muertes) === 0;
-    pais.enCurso = curado;
+    pais.enCurso = !curado;
 
     res.send(pais);
 });
