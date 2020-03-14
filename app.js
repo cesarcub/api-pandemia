@@ -41,17 +41,33 @@ app.put('/pandemia/crear-pais/:idPandemia', (req, res) => {
         res.send('ID de pandemia no existe');
     }
 
-    //Se crea ID autoincrementable
-    const idPais = pandemia.paises.length + 1;
+    //Se busca país por nombre
+    let datoPais = pandemia.paises.find((objPais) => objPais.nombre.toLocaleLowerCase() === pais.nombre.toLocaleLowerCase());
+    
+    //Si existe el país, se actualiza
+    if (datoPais) {
+        const indexPais = pandemia.paises.findIndex((objPais) => objPais.nombre.toLocaleLowerCase() === pais.nombre.toLocaleLowerCase());
+        pandemia.paises[indexPais] = {
+            ...datoPais,
+            ...pais
 
-    //Se crea nuevo objeto de país
-    const newPais = {
-        id: idPais,
-        ...pais
+        }
     }
+    //Si no existe el país, se crea
+    else {
 
-    //Se inserta país a la pandemia
-    pandemia.paises.push(newPais);
+        //Se crea ID autoincrementable
+        const idPais = pandemia.paises.length + 1;
+
+        //Se crea nuevo objeto de país
+        const newPais = {
+            id: idPais,
+            ...pais
+        }
+
+        //Se inserta país a la pandemia
+        pandemia.paises.push(newPais);
+    }
 
     //Se retornan la pandemia con el nuevo país
     res.send(pandemias);
